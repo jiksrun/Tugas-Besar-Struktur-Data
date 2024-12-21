@@ -1,7 +1,7 @@
 #include "editor.h"
 
 void moveCursorRight(Cursor& cursor) {
-	if (cursor.next) {
+	if (cursor.current && cursor.next) {
 		cursor.current = cursor.next;
 		cursor.next = cursor.current->next;
 	}

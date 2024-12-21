@@ -10,8 +10,11 @@ int main() {
 	create_text(text);
 	create_cursor(cursor);
 
-	Stack undo_stack;
-	Stack redo_stack;
+	Stack_text undo_stack;
+	Stack_text redo_stack;
+
+	/* Stack_cursor undo_stack_cursor; */
+	/* Stack_cursor redo_stack_cursor; */
 
 	char ch;
 
@@ -41,21 +44,37 @@ int main() {
 			}
 		} else if (ch == 127) {
 			push(undo_stack, text.first); 
+			/* push(undo_stack_cursor, cursor); */
 			if (!cursor.next) {
 				deleteLast(text, p, cursor);
-			}
-			else deleteBefore(text, p, cursor.current, cursor);
+			} else deleteBefore(text, p, cursor.current->next, cursor);
 
 		} else if (ch == 21) { // ctrl+u
 			if (!isEmpty(undo_stack)) {
 				push(redo_stack, text.first); 
 				pop(undo_stack, text.first);
 
-				cursor.current=text.first;
-				cursor.next=cursor.current->next;
+				/* push(redo_stack_cursor, cursor); */ 
+				/* pop(undo_stack_cursor, cursor); */
+
+				cursor.current = text.first;
+				cursor.next = (cursor.current ? cursor.current->next : nullptr) ;
+			} 
+		} else if (ch == 18) { // ctrl+r
+			if (!isEmpty(redo_stack)) {
+				push(undo_stack, text.first);
+				pop(redo_stack, text.first);
+
+				/* push(undo_stack_cursor, cursor); */ 
+				/* pop(redo_stack_cursor, cursor); */
+
+				cursor.current = text.first;
+				cursor.next = (cursor.current ? cursor.current->next : nullptr) ;
 			}
 		} else {
 			push(undo_stack, text.first); 
+			/* push(undo_stack_cursor, cursor); */
+			
 			if (!cursor.current) {
 				insertFirst(text, p, cursor);
 			} else if (!cursor.next) {
@@ -63,7 +82,6 @@ int main() {
 			} else {
 				insertAfter(text, p, cursor.current, cursor);
 			}
-
 		}
 
 	}

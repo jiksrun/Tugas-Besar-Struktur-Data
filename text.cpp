@@ -105,12 +105,12 @@ void deleteFirst(Text& text, adr p, Cursor& cursor) {
 	/* p->next = text.first->prev = nullptr; */
 	/* cursor.next = cursor.current; */
 	/* cursor.current = cursor.current->prev; */
+	cursor.current = text.first;
+	cursor.next = text.first ? text.first->next : nullptr;
 	p = text.first;
 	text.first = text.first->next;
 	text.first->prev = nullptr;
 	p->next = nullptr;
-	cursor.current = text.first;
-	cursor.next = text.first ? text.first->next : nullptr;
 }
 
 
@@ -196,31 +196,33 @@ void deleteBefore(Text& text, adr p, adr prec, Cursor& cursor) {
 		cursor.current = cursor.current->prev;
 		return;
 	}
+	cursor.next = cursor.current;
+	cursor.current = cursor.current->prev;
 	p = prec->prev;
 	prec->prev = p->prev;
 	prec->prev->next = prec;
 	p->next = p->prev = nullptr;
 
-	cursor.next = cursor.current;
-	cursor.current = cursor.current->prev;
 }
 
 
 
 void printText(Text text, Cursor& cursor) {
 	cout << "-----press ctrl+e to exit-----" << endl;
-	if (!text.first) return;
 
-	adr current = text.first;
-	while (current) {
-		cout << current->ch;
-		if (current == cursor.current) {
-			cout << '|';
+	if (text.first) {
+		adr current = text.first;
+		while (current) {
+			cout << current->ch;
+			if (current == cursor.current) {
+				cout << '|';
+			}
+			current = current->next;
 		}
-		current = current->next;
 	}
 	/* cout << "\ncursor current: " << (cursor.current ? cursor.current->ch : 'x') << endl; */
 	/* cout << "cursor next: " << (cursor.next ? cursor.next->ch : 'x') << endl; */
+	cout << "\n\n\n----press ctrl+u/ctrl+r to undo/redo----" << endl;
 }
 
 
